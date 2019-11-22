@@ -2,20 +2,30 @@ import React from "react"
 import { Link } from "gatsby"
 
 import Layout from "../components/layout"
-import Image from "../components/image"
 import SEO from "../components/seo"
+import post from '../../markov'
 
-const IndexPage = () => (
+const IndexPage = () => {
+    let date = new Date().toDateString();
+    function refreshPage(){
+        window.location.reload();
+    } 
+  return (
   <Layout>
     <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
+    <h1>Make Tweets Great Again!</h1>
+    <div class="post">
+        <img class="trump" src="https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg" alt="trump"/>
+        <h2>Donald J. Trump</h2>
+    <h3> @realDonaldTrump</h3>
+    <p id="tweet">{post}</p>
+    <p id="demo">{date}</p>
     </div>
-    <Link to="/page-2/">Go to page 2</Link>
+    <div className="button">
+        <button onClick={refreshPage}>Another One!</button>
+    </div>
   </Layout>
-)
+  )
+}
 
 export default IndexPage
