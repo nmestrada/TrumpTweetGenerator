@@ -110,6 +110,6 @@ function generatePoem(object, numLines){
   return poem;
 }
 
-let post = generatePoem(textObj, 3);
+const post = () => generatePoem(textObj, 3);
 
 export default post;

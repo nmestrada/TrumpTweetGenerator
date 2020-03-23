@@ -8,19 +8,20 @@ import datetime
 
 # edit these three variables
 user = 'realdonaldtrump'
-start = datetime.datetime(2019, 11, 1)  # year, month, day
-end = datetime.datetime(2019, 12, 1)  # year, month, day
+start = datetime.datetime(2020, 3, 18)  # year, month, day
+end = datetime.datetime(2020, 3, 20)  # year, month, day
 
 # only edit these if you're having problems
-delay = 2  # time to wait on each page load before reading the page
-driver = webdriver.Safari()  # options are Chrome() Firefox() Safari()
+delay = 5  # time to wait on each page load before reading the page
+driver = webdriver.Chrome('/Users/nmestrad/Downloads/chromedriver')  # options are Chrome() Firefox() Safari()
 
 
 # don't mess with this stuff
 twitter_ids_filename = 'all_ids.json'
 days = (end - start).days + 1
-id_selector = '.time a.tweet-timestamp'
-tweet_selector = 'li.js-stream-item'
+#id_selector = '.time a.tweet-timestamp'
+#tweet_selector = 'li.js-stream-item'
+tweet_selector = 'article > div > div > div > div > div > div > a'
 user = user.lower()
 ids = []
 
@@ -49,41 +50,66 @@ for day in range(days):
 
     try:
         found_tweets = driver.find_elements_by_css_selector(tweet_selector)
-        increment = 10
+        #increment = 10
+        all_tweets = found_tweets[:]
+        increment = 0
 
         while len(found_tweets) >= increment:
             print('scrolling down to load more tweets')
             driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
             sleep(delay)
             found_tweets = driver.find_elements_by_css_selector(tweet_selector)
+            #new line as of 3/23
+            all_tweets += found_tweets[:]
+            #end of new line
             increment += 10
 
         print('{} tweets found, {} total'.format(len(found_tweets), len(ids)))
 
         for tweet in found_tweets:
             try:
-                id = tweet.find_element_by_css_selector(id_selector).get_attribute('href').split('/')[-1]
+                #id = tweet.find_element_by_css_selector(id_selector).get_attribute('href').split('/')[-1]
+                id = tweet.get_attribute('href').split('/')[-1]
                 ids.append(id)
             except StaleElementReferenceException as e:
                 print('lost element reference', tweet)
+
+        #console.log found ids
+        print(ids)
 
     except NoSuchElementException:
         print('no tweets on this day')
 
     start = increment_day(start, 1)
 
+finalids = [tweetid for tweetid in ids if tweetid.isdigit() == True]
 
+# try:
+#     with open(twitter_ids_filename) as f:
+#         all_ids = ids + json.load(f)
+#         data_to_write = list(set(all_ids))
+#         print('tweets found on this scrape: ', len(ids))
+#         print('total tweet count: ', len(data_to_write))
+# except FileNotFoundError:
+#     with open(twitter_ids_filename, 'w') as f:
+#         all_ids = ids
+#         data_to_write = list(set(all_ids))
+#         print('tweets found on this scrape: ', len(ids))
+#         print('total tweet count: ', len(data_to_write))
+
+# with open(twitter_ids_filename, 'w') as outfile:
+#     json.dump(data_to_write, outfile)
 try:
     with open(twitter_ids_filename) as f:
-        all_ids = ids + json.load(f)
+        all_ids = finalids + json.load(f)
         data_to_write = list(set(all_ids))
-        print('tweets found on this scrape: ', len(ids))
+        print('tweets found on this scrape: ', len(finalids))
         print('total tweet count: ', len(data_to_write))
 except FileNotFoundError:
     with open(twitter_ids_filename, 'w') as f:
-        all_ids = ids
+        all_ids = finalids[:]
         data_to_write = list(set(all_ids))
-        print('tweets found on this scrape: ', len(ids))
+        print('tweets found on this scrape: ', len(finalids))
         print('total tweet count: ', len(data_to_write))
 
 with open(twitter_ids_filename, 'w') as outfile:

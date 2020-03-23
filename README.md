@@ -4,7 +4,7 @@ My Trump Tweet Generator was made with Gatsby.js, React, and vanilla Javascript.
 ## To Enjoy it
 
 ````
-npm init
+git clone this repo
 ````
 ````
 npm install
@@ -15,3 +15,5 @@ npm start
 
 ## Authors
 Natalie Estrada - Sole Developer
+## License
+MIT 
