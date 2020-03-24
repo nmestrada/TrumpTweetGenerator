@@ -70,3 +70,5 @@ yarn-error.log
 
 #Twitter API keys
 api_keys.json
+secrets.js
+
