@@ -1,15 +1,17 @@
-import React from "react"
+import React, {useState, useEffect} from "react"
 import { Link } from "gatsby"
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import post from '../../markov'
+import makeTweet from '../../markov'
 
 const IndexPage = () => {
+    const [post, setPost] = useState('');
+    useEffect(()=> {
+        setPost(makeTweet());
+    }, [])
+    const clickHandler = () => setPost(makeTweet());
     let date = new Date().toDateString();
-    function refreshPage(){
-        window.location.reload();
-    } 
   return (
   <Layout>
     <SEO title="Home" />
@@ -22,7 +24,7 @@ const IndexPage = () => {
     <p id="demo">{date}</p>
     </div>
     <div className="button">
-        <button onClick={refreshPage}>Another One!</button>
+        <button onClick={clickHandler}>Another One!</button>
     </div>
   </Layout>
   )
